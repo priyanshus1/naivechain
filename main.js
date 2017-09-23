@@ -232,7 +232,7 @@ var initMessageHandler = (ws) => {
 						addBlock(newBlock);
 						broadcast(responseLatestMsg());
 						console.log('block added: ' + JSON.stringify(newBlock));
-						res.send();
+						
 					}
 
 				});
