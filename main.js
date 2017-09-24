@@ -4,7 +4,8 @@ var express = require("express");
 var bodyParser = require('body-parser');
 var WebSocket = require("ws");
 
-var stdin = process.openStdin();
+//var stdin = process.openStdin();
+var readlineSync = require('readline-sync');
 
 var http_port = process.env.HTTP_PORT || 3001;
 var p2p_port = process.env.P2P_PORT || 6001;
@@ -221,23 +222,15 @@ var initMessageHandler = (ws) => {
 				break;
 			case MessageType.REQUEST_BLOCK:
 				console.log("Mine Block Request -> Do you wanna process[y/n]")
-				stdin.addListener("data", function(d) {
-					// note:  d is an object, and when converted to a string it will
-					// end with a linefeed.  so we (rather crudely) account for that
-					// with toString() and then trim()
-					console.log("you entered: [" +
-						d.toString().trim() + "]");
-					if (d.toString().trim() == "y") {
-						var newBlock = generateNextBlock(message.data);
-						addBlock(newBlock);
-						broadcast(responseLatestMsg());
-						console.log('block added: ' + JSON.stringify(newBlock));
-						
-					}
+				var input = readlineSync.question('May I have your name? ');
+				if (input == "y" || "Y") {
+					var newBlock = generateNextBlock(message.data);
+					addBlock(newBlock);
+					broadcast(responseLatestMsg());
+					console.log('block added: ' + JSON.stringify(newBlock));
+					break;
+				}
 
-				});
-
-				break;
 		}
 	});
 };
